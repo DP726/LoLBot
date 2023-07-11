@@ -6,7 +6,7 @@ import random
 from riotwatcher import LolWatcher
 from pathlib import Path
 
-from discord.ui import Button, View
+from discord.ui import Button, View, Select
 from discord.ext import commands
 
 #import os
@@ -91,10 +91,10 @@ matchIDs = lol_watcher.match.matchlist_by_puuid("na1", "6CusSU6ICOQfsOO5tmyocyvJ
 prefix = "."
 intents=discord.Intents.default()
 intents.message_content = True
-client = discord.Client(intents=intents)
+client = discord.Client(intents=intents, prefix=".")
 tree = app_commands.CommandTree(client)
 
-lol_watcher = LolWatcher('RGAPI-82418ae5-beb2-4d39-a0ec-beb2e73422ae')
+lol_watcher = LolWatcher('RGAPI-fd50b311-1737-432c-b860-f3c755429cf6')
 version = lol_watcher.data_dragon.versions_for_region('na1')
 
 bot = commands.Bot(command_prefix=prefix, intents=intents)
@@ -114,18 +114,25 @@ async def setprefix(ctx, newPrefix):
 @tree.command()
 async def t(interaction: discord.Interaction):
     
-    embed = discord.Embed(title="this is title", description="this is description")
+    """embed = discord.Embed(title="this is title", description="this is description")
 
-    button = Button(style=discord.ButtonStyle.red, label="test")
+    #button = Button(style=discord.ButtonStyle.red, label="test")
+
+    select = Select(options=[discord.SelectOption(label="1", value="hi")])
     view = View()
-    view.add_item(button)
+    view.add_item(select)
 
     async def r(inter):
         embed = discord.Embed(title="same title", description="edited")
         await interaction.edit_original_response(embed=embed, view=view)
 
-    button.callback = r
-    await interaction.response.send_message(embed=embed, view=view)
+    select.callback = r
+    await interaction.response.send_message(embed=embed, view=view)"""
+
+    """champListKeys = list(champList.keys())
+    for i in champListKeys:"""
+
+
 
 @bot.command()
 async def show(ctx):
@@ -178,8 +185,6 @@ async def gtc(ctx):
 
 @tree.command()
 async def profile(interaction: discord.Interaction, user: str):
-
-    user = user.replace("_", " ")
 
     summonerID = (lol_watcher.summoner.by_name('na1', user))["id"]
     summoner = lol_watcher.league.by_summoner('na1', summonerID)
@@ -301,72 +306,113 @@ min=0
 max=10
 
 @tree.command()
-async def mastery(interaction: discord.Interaction, user: str):
-    masteryList = lol_watcher.champion_mastery.by_summoner("na1", (lol_watcher.summoner.by_name('na1', user))["id"])
-    description = ""
-
-    nextButton = Button(label="Next", style=discord.ButtonStyle.green)
-    previousButton = Button(label="Previous", style=discord.ButtonStyle.green)
-    view = View()
-    view.add_item(previousButton)
-    view.add_item(nextButton)
-
-    for i in range(min, max):
-        description += str(i+1) + ". " + champList[str((masteryList[i])["championId"])] + " - " + str((masteryList[i])["championPoints"]) + "\n"
+async def mastery(interaction: discord.Interaction, user: str, champion: str=None):
     
-    embed = discord.Embed(title="Mastery", description=description)
-    embed.set_footer(text="Page " + str((min//10)+1) + " of " + str((len(masteryList)//10)+1))
+    summonerID = (lol_watcher.summoner.by_name('na1', user))["id"]
+    name = (lol_watcher.summoner.by_name('na1', user))["name"]
 
-    async def next(inter):
-
-        global min
-        global max
-        
-        if(max+10 > len(masteryList)):
-            min+= 10
-            max=len(masteryList)
-        else:
-            min+=10
-            max+=10
-        
+    if(champion == None):
+        masteryList = lol_watcher.champion_mastery.by_summoner("na1", summonerID)
         description = ""
-        for i in range(min,max):
-            description += str(i+1) + ". " + champList[str((masteryList[i])["championId"])] + " - " + str((masteryList[i])["championPoints"]) + "\n"
-        
-        embed = discord.Embed(title="Mastery", description=description)
-        embed.set_footer(text="Page " + str((min//10)+1) + " of " + str((len(masteryList)//10)+1))
-        
-        await interaction.edit_original_response(embed=embed)
-        await inter.response.defer()
-    
-    async def previous(inter):
 
-        global min
-        global max
+        nextButton = Button(label="Next", style=discord.ButtonStyle.green)
+        previousButton = Button(label="Previous", style=discord.ButtonStyle.green)
+        view = View()
+        view.add_item(previousButton)
+        view.add_item(nextButton)
 
-        if(min-10 < 0):
-            min=0
-            max=10
-        elif(max==len(masteryList)):
-            max-=max%10
-            min-=10
-        else:
-            min-=10
-            max-=10
-        description = ""
-        for i in range(min,max):
+        for i in range(min, max):
             description += str(i+1) + ". " + champList[str((masteryList[i])["championId"])] + " - " + str((masteryList[i])["championPoints"]) + "\n"
         
         embed = discord.Embed(title="Mastery", description=description)
         embed.set_footer(text="Page " + str((min//10)+1) + " of " + str((len(masteryList)//10)+1))
 
-        await interaction.edit_original_response(embed=embed)
-        await inter.response.defer()
+        async def next(inter):
 
-    nextButton.callback = next
-    previousButton.callback = previous
+            global min
+            global max
+            
+            if(max+10 > len(masteryList)):
+                min+= 10
+                max=len(masteryList)
+            else:
+                min+=10
+                max+=10
+            
+            description = ""
+            for i in range(min,max):
+                description += str(i+1) + ". " + champList[str((masteryList[i])["championId"])] + " - " + str((masteryList[i])["championPoints"]) + "\n"
+            
+            embed = discord.Embed(title="Mastery", description=description)
+            embed.set_footer(text="Page " + str((min//10)+1) + " of " + str((len(masteryList)//10)+1))
+            
+            await interaction.edit_original_response(embed=embed)
+            await inter.response.defer()
+        
+        async def previous(inter):
 
-    await interaction.response.send_message(embed=embed, view=view)
+            global min
+            global max
+
+            if(min-10 < 0):
+                min=0
+                max=10
+            elif(max==len(masteryList)):
+                max-=max%10
+                min-=10
+            else:
+                min-=10
+                max-=10
+            description = ""
+            for i in range(min,max):
+                description += str(i+1) + ". " + champList[str((masteryList[i])["championId"])] + " - " + str((masteryList[i])["championPoints"]) + "\n"
+            
+            embed = discord.Embed(title="Mastery", description=description)
+            embed.set_footer(text="Page " + str((min//10)+1) + " of " + str((len(masteryList)//10)+1))
+
+            await interaction.edit_original_response(embed=embed)
+            await inter.response.defer()
+
+        nextButton.callback = next
+        previousButton.callback = previous
+
+        await interaction.response.send_message(embed=embed, view=view)
+    else:
+        versionChampion = version["n"]["champion"]
+
+        champion = champion.strip().capitalize()
+
+        if("sol" in champion.lower()):
+            champion = "AurelionSol"
+        elif("lee" in champion.lower()):
+            champion = "LeeSin"
+        elif("master" in champion.lower()):
+            champion = "MasterYi"
+        elif("miss" in champion.lower()):
+            champion = "MissFortune"
+        elif("fate" in champion.lower()):
+            champion = "TwistedFate"
+        elif("xin" in champion.lower()):
+            champion = "XinZhao"
+        elif("ksante" in champion.lower()):
+            champion = "KSante"
+        elif("kog" in champion.lower()):
+            champion = "KogMaw"
+        elif("rek" in champion.lower()):
+            champion = "RekSai"
+        print(champion)
+
+
+        championID = lol_watcher.data_dragon.champions(versionChampion, False)["data"][champion]["key"]
+
+        print(type(championID))
+
+        championMastery = lol_watcher.champion_mastery.by_summoner_by_champion("na1", summonerID, int(championID))
+        print(championMastery)
+        embed=discord.Embed(title=champList[championID] + " Mastery Points", description=name + " has " + str(championMastery["championPoints"]) + " points on " + champList[championID])
+
+        await interaction.response.send_message(embed=embed)
+
 
 @tree.command()
 async def cr(interaction: discord.Interaction):

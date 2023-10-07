@@ -13,16 +13,7 @@ from discord.ext import commands
 
 #     py -3 main.py
 
-"""
 
-
-PUUID : 6CusSU6ICOQfsOO5tmyocyvJKf89X_OG3IzKtluNWwzmnWFjFcJmSkRch8zOHkJROh3nhHm1yh3xoQ
-
-ACCOUNT ID : 7GkedLZUuqduU1L-3G0CrmkJXoAlS7aCfEGgbY8yv4-5tK4ww2S7KHja
-
-ID : 7XDvEqQlzo1ffnt7XNJ6rl59Uz6ZqAwvSG0s5Djs3aGG7Ob2
-
-"""
 
 
 
@@ -85,16 +76,13 @@ matchIDs = lol_watcher.match.matchlist_by_puuid("na1", "6CusSU6ICOQfsOO5tmyocyvJ
 
 """
 
-
-
-
 prefix = "."
 intents=discord.Intents.default()
 intents.message_content = True
 client = discord.Client(intents=intents, prefix=".")
 tree = app_commands.CommandTree(client)
 
-lol_watcher = LolWatcher('RGAPI-fd50b311-1737-432c-b860-f3c755429cf6')
+lol_watcher = LolWatcher('RGAPI-7d9cf964-f574-4db5-9203-92aae9210456')
 version = lol_watcher.data_dragon.versions_for_region('na1')
 
 bot = commands.Bot(command_prefix=prefix, intents=intents)
@@ -140,19 +128,6 @@ async def show(ctx):
     
     for i in range(3):
         await ctx.send(embed=embed)
-
-"""
-
-possibly make a summary of stats of the most important things in the last 20 games (or watever riot api allows):::::
-
-i.e avg cs/min, avg wrds/min, avg gold/min, avg dmg dealt/min, avg kda, avg kills/min @14, avg cs@14, winrate 
-
-
-
-
-
-
-"""
 
 
 @bot.command()
@@ -230,6 +205,7 @@ async def profile(interaction: discord.Interaction, user: str):
         print(spectateInfo)
         
         queueType = spectateInfo["gameQueueConfigId"]
+        print(queueType)
         gameMode = ""
         if(queueType == 450):
             gameMode = "Aram"
@@ -481,4 +457,4 @@ async def status(interaction: discord.Interaction):
 
     await interaction.response.send_message(embed=embed)
 
-client.run("MTExNzIxNTk2ODU5NTI4ODIwNQ.GufZEL.Uob2SAt_SEV1E6_hEq3pnw9Pr4iij_BT-J9400")
+client.run(TOKEN)

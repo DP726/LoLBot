@@ -1,80 +1,12 @@
 import discord
 from discord import app_commands
 
-
 import random
 from riotwatcher import LolWatcher
 from pathlib import Path
 
 from discord.ui import Button, View, Select
 from discord.ext import commands
-
-#import os
-
-#     py -3 main.py
-
-
-
-
-
-"""
-
-matchIDs = lol_watcher.match.matchlist_by_puuid("na1", "6CusSU6ICOQfsOO5tmyocyvJKf89X_OG3IzKtluNWwzmnWFjFcJmSkRch8zOHkJROh3nhHm1yh3xoQ", 0, 20, None, "ranked")
-
-        championGames = {}
-        championWins = {}
-        championLosses = {}
-
-        win = 0
-        for i in matchIDs:
-            match = lol_watcher.match.by_id("na1", i)
-            participants = (match["info"])["participants"]
-            for j in participants:
-                if(j["puuid"] == "6CusSU6ICOQfsOO5tmyocyvJKf89X_OG3IzKtluNWwzmnWFjFcJmSkRch8zOHkJROh3nhHm1yh3xoQ"):
-                    championId = str(j["championId"])
-                    
-                    if(championId not in championGames):
-                        championGames[championId] = [0,0]
-                    (championGames[championId])[0] += 1
-
-                    if(j["win"] == True):
-                        (championGames[championId])[1] += 1
-
-
-
-
-        
-        # Champ Keys
-        championKeys = list(championGames.keys())
-
-        # Champ Games and Champ Wins
-        allValues = list(championGames.values())
-
-        gameValues = []
-        winValues = []
-
-        # Champ Games
-        for i in allValues:
-            gameValues.append(i[0])
-
-        # Champ Wins
-        for i in allValues:
-            winValues.append(i[1])
-
-        # Ordered Champ Games ( MOST -> LEAST )
-        orderedGameValues = gameValues.copy()
-        orderedGameValues.sort(reverse=True)
-
-        orderedChampionKeys = []
-
-
-        # Ordered Champ Keys ( MOST GAMES -> LEAST GAMES )
-        for i in orderedGameValues:
-            orderedChampionKeys.append(championKeys[gameValues.index(i)])
-
-        print(orderedChampionKeys)
-
-"""
 
 prefix = "."
 intents=discord.Intents.default()
@@ -93,70 +25,6 @@ champList = {'266': 'Aatrox', '103': 'Ahri', '84': 'Akali', '166': 'Akshan', '12
 async def on_ready():
     await tree.sync()
     print("Ready")
-
-"""@bot.command()
-async def setprefix(ctx, newPrefix):
-    global prefix
-    prefix = newPrefix"""
-
-@tree.command()
-async def t(interaction: discord.Interaction):
-    
-    """embed = discord.Embed(title="this is title", description="this is description")
-
-    #button = Button(style=discord.ButtonStyle.red, label="test")
-
-    select = Select(options=[discord.SelectOption(label="1", value="hi")])
-    view = View()
-    view.add_item(select)
-
-    async def r(inter):
-        embed = discord.Embed(title="same title", description="edited")
-        await interaction.edit_original_response(embed=embed, view=view)
-
-    select.callback = r
-    await interaction.response.send_message(embed=embed, view=view)"""
-
-    """champListKeys = list(champList.keys())
-    for i in champListKeys:"""
-
-
-
-@bot.command()
-async def show(ctx):
-    embed = discord.Embed(color=0xFF5733, title="hello", type="rich", description="this is a test")
-    
-    for i in range(3):
-        await ctx.send(embed=embed)
-
-
-@bot.command()
-async def gtc(ctx):
-    win = False
-    champindex = random.randint(0,162)
-    champ = champlist[champindex]
-
-    msg=""
-    for i in champ:
-        msg += "a"
-    # :white_large_square:
-    while win == False:
-
-        embed = discord.Embed(color=0xFF5733, title="hello", description=msg)
-        await ctx.send(embed=embed)
-
-        await ctx.send(champ)
-        message = await bot.wait_for("message")
-
-        for i in range(len(champ)):
-            if champ[i].lower() == message.content.lower():
-                msg[i] == champ[i]
-
-        if(msg.lower() == champ.lower()):
-            await ctx.send("Win")
-            win = True
-        #else:
-            #await ctx.send("Wrong")
 
 @tree.command()
 async def profile(interaction: discord.Interaction, user: str):
